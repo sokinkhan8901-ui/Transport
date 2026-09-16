@@ -1,0 +1,246 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transport Business Register</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  color: #333;
+}
+
+.container {
+  width: 96%;
+  margin: 25px auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 25px;
+  margin-bottom: 22px;
+}
+
+.new-btn {
+  background: #087f3d;
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.new-btn:hover {
+  background: #05652f;
+}
+
+.table-box {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border: 1px solid #ccc;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 1800px;
+  width: 100%;
+}
+
+th {
+  background: #087f3d;
+  color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+td {
+  border: 1px solid #ccc;
+  padding: 7px;
+  background: white;
+  white-space: nowrap;
+}
+
+input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+}
+
+.delete-btn {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-btn:hover {
+  background: #b52b27;
+}
+
+.total {
+  font-weight: bold;
+}
+
+.form-area {
+  display: none;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.form-grid input {
+  border: 1px solid #bbb;
+  padding: 9px;
+  border-radius: 4px;
+}
+
+.save-btn {
+  margin-top: 12px;
+  background: #087f3d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  margin-top: 12px;
+  background: #777;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media(max-width:700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🚚 Transport Business Register</h1>
+
+<button class="new-btn" onclick="showForm()">+ New Entry</button>
+
+<div class="form-area" id="formArea">
+
+  <div class="form-grid">
+
+    <input type="date" id="date">
+
+    <input type="text" id="broker" placeholder="Broker Name">
+
+    <input type="text" id="driver" placeholder="Driver Name">
+
+    <input type="text" id="truck" placeholder="Lori / Truck No.">
+
+    <input type="text" id="from" placeholder="From Place">
+
+    <input type="text" id="to" placeholder="To Place">
+
+    <input type="number" id="weight" placeholder="Weight (Ton)">
+
+    <input type="number" id="rate" placeholder="Rate (₹/Ton)">
+
+    <input type="number" id="diesel" placeholder="Diesel (₹)">
+
+    <input type="number" id="cash" placeholder="Cash (₹)">
+
+    <input type="number" id="brokerPayment" placeholder="Broker Payment (₹)">
+
+    <input type="number" id="driverPayment" placeholder="Driver Payment (₹)">
+
+  </div>
+
+  <button class="save-btn" onclick="addEntry()">Save Entry</button>
+  <button class="cancel-btn" onclick="hideForm()">Cancel</button>
+
+</div>
+
+<div class="table-box">
+
+<table>
+
+<thead>
+<tr>
+  <th>Date</th>
+  <th>Broker Name</th>
+  <th>Driver Name</th>
+  <th>Lori / Truck No.</th>
+  <th>From Place</th>
+  <th>To Place</th>
+  <th>Weight (Ton)</th>
+  <th>Rate (₹/Ton)</th>
+  <th>Total Freight (₹)</th>
+  <th>Diesel (₹)</th>
+  <th>Cash (₹)</th>
+  <th>Broker Payment (₹)</th>
+  <th>Driver Payment (₹)</th>
+  <th>Broker Balance (₹)</th>
+  <th>Driver Balance (₹)</th>
+  <th>Action</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let entries = JSON.parse(localStorage.getItem("transportEntries")) || [];
+
+function showForm() {
+  document.getElementById("formArea").style.display = "block";
+
+  if (!document.getElementById("date").value) {
+    document.getElementById("date").value =
+      new Date().toISOString().split("T")[0];
+  }
+}
+
+function hideForm() {
+  document.getElementById("formArea").style.display = "none";
+}
+
+function addEntry() {
+
+  const weight = Number(document.getElementById("weight").value) || 0;
+  const rate = Number(document
